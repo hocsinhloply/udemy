@@ -1,0 +1,205 @@
+#!/bin/bash
+sudo echo "Port 8080" >> /etc/ssh/sshd_config
+sudo systemctl daemon-reload
+sudo systemctl restart ssh || sudo systemctl restart sshd
+
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo cur*l -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+
+###Verify that the installation is successful
+sudo systemctl status docker
+sudo systemctl start docker
+sudo docker run hello-world
+
+/////////End Install//////////
+
+###Docker command
+
+
+docker version
+docker info
+docker -v
+docker --help
+ps aux /////List all processes
+docker ps
+docker ps - a
+
+###docker <Management command> <Action command> [OPTION]
+docker container ls
+docker container ls -a
+docker container run --name aaaa -d nginx
+docker container rm [NAME] or [ID] (docker rm -f: enforce even container is running
+docker container stop ///stop before rm
+docker container start -i
+docker container restart
+docker container logs [NAME] or [ID] ///logs
+docker image ls
+
+docker container run --name mysql1 --env MYSQL_RANDOM_ROOT_PASSWORD=yes --publish 3306:3306 -d mysql
+
+
+docker container top [NAME]//process list
+docker container inspect //configuration container
+docker container stats [NAME] (if not have parameter => all)///performance
+docker container run -it : chạy mới container và vào shell
+docker container run -it [IMAGE] bash : (VD: nginx khi chạy container sẽ vào luôn phần web)
+docker container exec -it : vào shell của container đang chạy
+docker container exec -it [NAME] bash
+exit: thoát interactive terminal and container
+Ctrl + PQ: thoát interactive terminal
+
+
+Hệ thống mạng của Docker
+- Khi tạo container, mỗi container được tạo một mạng ảo dạng BRIDGE => NAT ra IP của host OS
+=> tự động được thông chiều outbound
+=> Để có chiều inbound từ ngoài vào container => thêm option --publish khi tạo container
+
+docker network ls: show networks (driver - type)
+dcoker network inspect: kiểm tra cấu hình network
+docker network create -driver: tạo 
+docker network create my_db_net
+docker network connect: kết nối network vào container
+docker network disconnect: bỏ kết nối network
+
+Create a new container and connect to a network
+docker network create 
+docker container run --name [NAME] -d --network [NETWORK] nginx
+	check: docker network inspect
+		docker container inspect
+
+Attach a network to a created container
+docker network connect [NETWORK] [CONTAINER] (check same above)
+docker network disconnect [NETWORK] [CONTAINER]
+
+
+--network-alias => alias for a container, nhiều container có thể chung 1 alias => load balancer
+docker container run --name centos1 -it --network my_db_net centos:7
+docker container run --name centos2 -it --network my_db_net centos:7
+ping centos1
+
+docker container run --name nginx1 -d --network-alias webserver --network my_db_net nginx
+docker container run --name nginx2 -d --network-alias webserver --network my_db_net nginx
+docker container run --name nginx3 -d --network-alias webserver --network my_db_net nginx
+
+ping webserver (in centos)
+
+Remove list of container with the same prefix
+docker container rm  -f $(docker container ls -a --filter name="nginx*" -q)
+
+
+install cur*l
+	ubuntu: apt-get update & apt-get install cur*l
+	centos: yum update curl
+docker container run --name elastic1 -d --network-alias search --network my_db_net elasticsearch:2
+docker container run --name elastic2 -d --network-alias search --network my_db_net elasticsearch:2
+docker container exec -it ubuntu1 bash
+cu*rl -s search:9200
+docker container run -rm (khi thoát container tự xóa)
+
+
+docker image inspect [IMAGE]
+docker-compose up
+docker-compose down
+docker image history [IMAGE]
+docker image tag [CUR NAME] [NEW NAME]
+
+///Login docker hub
+docker login
+docker image push [IMAGE] ///push image to repository
+
+docker image build -t [NAME TAG] [DockerFile location]
+docker image build -t ddd .
+WORKDIR - chuyển vào thư mục hiện tại
+COPY - copy file từ máy tính vào thư mục trong image
+
+
+
+//Persistent data: Volume or Mount
+docker container run -d --name mysql -e MYSQL_ROOT_PASSWORD=123456 mysql:8.0 (auto create volume)
+docker container run -d --name mysql2 -e MYSQL_ALLOW_EMPTY_PASSWORD=True -v mysql-db:/var/lib/mysql mysql:8.0 
+(auto create volume with name mysql-db - this is stored in host, /var/lib/mysql is path in container)
+docker volume ls
+
+///Mount khác với volume là điền tên volume thì thay bằng path đến thư mục
+///Bind mount thường ngắn hạn, đồng bộ file
+///Volume lâu dài (VD: database)
+docker container run -d --name nginx -p 80:80 -v ~/dockerfile-sample:/usr/share/nginx/html nginx
+
+
+///Check log
+docker container logs [NAME]
+
+
+//docker compose, tự động hóa cho môi trường nhỏ chỉ sử dụng 1 host
+//Naming docker-compose.yml
+//Đặt tên khác => khi chạy docker-compose -f [FILE NAME]
+docker-compose up => set up network, volume, bật containers
+docker-compose down => tắt hết container và xóa network, volume
+
+///Dockerfile thuong nam chung thu muc voi docker-compose.yml
+////Ten container cung duoc dung thay cho localhost => chu y
+
+///scp from Window
+scp -r -P 8080 -i "C:\Users\dungq\Key\ddd-root-key.pem" "E:\Work\Udemy\Docker\compose-build" ubuntu@13.229.210.32:/home/ubuntu/
+sudo chown root:root path folder
+mv [cur path] [new path] (sudo -i sẽ vào /root)
+
+
+/// Host local registry
+docker run -d -p 5000:5000 --name registry registry:2.7
+docker tag ubuntu localhost:5000/ubuntu
+docker push localhost:5000/ubuntu
+docker pull localhost:5000/ubuntu
+docker rmi localhost:5000/ubuntu ///remove 
+docker -H 10.0.9.75:5000 info | head //check host
+
+docker tag my-nginx 10.0.9.75:5000/my-nginx (naming my-nginx as 10.0.9.75:5000/my-nginx)
+docker push 10.0.9.75:5000/my-nginx (push)
+cu*rl 10.0.9.75/v2/_catalog //Check image da duoc day len chua
+
+Host Private Registry in Server A: 
+	docker run -d -p 5000:5000 --name registry registry
+Client in Server B
+	docker tag my-nginx 10.0.9.75:5000/my-nginx (naming my-nginx as 10.0.9.75:5000/my-nginx)
+	docker push 10.0.9.75:5000/my-nginx (push)
+	nano /etc/docker/daemon.json
+		{
+        		"insecure-registries" : ["[IP serverA]:5000"]
+		}
+	=> have to config de co the ket noi http trust registry khong TLS, because default docker chi cho phep HTTPS
+	systemctl restart docker
+/// Cluster: triển khai cùng một ung dung trên nhiều host
+- Lam sao tu dong hoa trien khai container
+- Scale out/in/up/down?
+- Dam bao container tu khoi phuc khi loi?
+- Thay the container van dam bao he thong online?
+- Kiem soat va quan ly vong doi cua container?
+- Mang lien thong giua cac host (node)?
+- Quan ly cac host tin cay moi duoc chay container?
+- Quan ly key, secret, password va su dung tren container an toan?
+
+=> Orchestrator: nguoi dieu phoi, nhac truong
+
+Swarm or Kubernetes
+
+Swarm Mode (Docker tao ra)
+- Clustering
+docker swarm
+docker node
+docker service
+docker stack
+docker secret
