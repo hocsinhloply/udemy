@@ -3,8 +3,6 @@ sudo echo "Port 8080" >> /etc/ssh/sshd_config
 sudo systemctl daemon-reload
 sudo systemctl restart ssh || sudo systemctl restart sshd
 
-/////////End Install//////////
-
 ### Install container runtime - containerd
 
 # sysctl params required by setup, params persist across reboots
@@ -59,9 +57,74 @@ sudo apt-mark hold kubelet kubeadm kubectl
 #########End install tool##########
 
 ### Initiate Kubeadm control plane configuration on the master node
-### Set env
+### Set env for master
 
-IPADDR="10.0.9.23"
+IPADDR="10.0.9.45"
 NODENAME=$(hostname -s)
-POD_CIDR="192.168.0.0/16
+POD_CIDR="192.168.0.0/16"
 
+kubeadm init --apiserver-advertise-address=$IPADDR  --apiserver-cert-extra-sans=$IPADDR  --pod-network-cidr=$POD_CIDR --node-name $NODENAME --ignore-preflight-errors Swap
+
+kubeadm init --pod-network-cidr=$POD_CIDR --control-plane-endpoint=$IPADDR 
+
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.30.3/manifests/calico.yaml
+
+########
+To start using your cluster, you need to run the following as a regular user:
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+Alternatively, if you are the root user, you can run:
+
+  export KUBECONFIG=/etc/kubernetes/admin.conf
+
+You should now deploy a pod network to the cluster.
+Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+Then you can join any number of worker nodes by running the following on each as root
+
+kubeadm join 10.0.9.33:6443 --token 01tu77.4vorzhjuu6qs9kjl \
+        --discovery-token-ca-cert-hash sha256:d55dd56adaff3eae67120d397bce037a1a39582b1fb547e12d3d2b3eafc994e5
+
+join master
+
+kubeadm join 10.0.9.33:6443 --token 01tu77.4vorzhjuu6qs9kjl \
+        --discovery-token-ca-cert-hash sha256:d55dd56adaff3eae67120d397bce037a1a39582b1fb547e12d3d2b3eafc994e5 \
+	--control-plane --certificate-key 0c26b0bf3630cf4ab1aae17858d8dcdd9edc02e4b9eff7af0f90994d13d9f470
+
+###########
+
+
+
+
+
+#### Reset a worker after removed from a cluster
+
+sudo kubeadm reset -f
+
+sudo rm -rf /etc/cni/net.d
+sudo rm -rf /var/lib/cni/
+sudo rm -rf /var/lib/kubelet/*
+sudo rm -rf /etc/Kubernetes/
+sudo rm -rf /var/lib/etcd
+
+
+kubectl -n kube-system edit cm kubeadm-config
+
+kubeadm join 10.0.9.84:6443 --token cvk1yc.pe8fki5nep6hi0so --discovery-token-ca-cert-hash sha256:e762cdc6b0aa3ad1894a7709aa77a259af3f8d46ae8e6d713a32487f3df0e3bd \
+        --control-plane --certificate-key e44939a2548c91f87f2e7cb1c17b61dec1781c940908ace98d4dedd5ce4172b2
+
+Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join 10.0.9.45:6443 --token 0wuagk.mn0l9ojvr1cdb0qn \
+        --discovery-token-ca-cert-hash sha256:1aa7d418e9a7aae342c615efdc3ac97df3ae98bf111dec4e98c1b9f71b9f7f42
+
+
+sudo kubeadm init phase upload-certs --upload-certs
