@@ -59,7 +59,7 @@ sudo apt-mark hold kubelet kubeadm kubectl
 ### Initiate Kubeadm control plane configuration on the master node
 ### Set env for master
 
-IPADDR="10.0.9.45"
+IPADDR="10.0.0.4"
 NODENAME=$(hostname -s)
 POD_CIDR="192.168.0.0/16"
 
@@ -70,39 +70,12 @@ kubeadm init --pod-network-cidr=$POD_CIDR --control-plane-endpoint=$IPADDR
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
-
+#wget https://raw.githubusercontent.com/projectcalico/calico/v3.30.3/manifests/calico.yaml
+#kubectl apply -f calico.yaml
 kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.30.3/manifests/calico.yaml
 
-########
-To start using your cluster, you need to run the following as a regular user:
 
-  mkdir -p $HOME/.kube
-  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-  sudo chown $(id -u):$(id -g) $HOME/.kube/config
-
-Alternatively, if you are the root user, you can run:
-
-  export KUBECONFIG=/etc/kubernetes/admin.conf
-
-You should now deploy a pod network to the cluster.
-Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
-  https://kubernetes.io/docs/concepts/cluster-administration/addons/
-
-Then you can join any number of worker nodes by running the following on each as root
-
-kubeadm join 10.0.9.33:6443 --token 01tu77.4vorzhjuu6qs9kjl \
-        --discovery-token-ca-cert-hash sha256:d55dd56adaff3eae67120d397bce037a1a39582b1fb547e12d3d2b3eafc994e5
-
-join master
-
-kubeadm join 10.0.9.33:6443 --token 01tu77.4vorzhjuu6qs9kjl \
-        --discovery-token-ca-cert-hash sha256:d55dd56adaff3eae67120d397bce037a1a39582b1fb547e12d3d2b3eafc994e5 \
-	--control-plane --certificate-key 0c26b0bf3630cf4ab1aae17858d8dcdd9edc02e4b9eff7af0f90994d13d9f470
-
-###########
-
-
-
+kubectl get pods -n kube-system # Check fail control plane
 
 
 #### Reset a worker after removed from a cluster
@@ -161,5 +134,60 @@ sudo kubeadm init phase upload-certs --upload-certs
 - kubectl rollout undo deployment/myapp-deployment
 - kubectl get svc
 
+# Use containerd pull image from localhost registry, add flag --plain-http=true
+- sudo ctr images pull --plain-http=true 10.0.0.5:5000/nginx-custom:latest
 
+
+
+### Create https proxy by nginx
+sudo scp -i ddd-root-key.pem -P 8080 ubuntu@10.0.0.5:/etc/ssl/certs/registry.crt /etc/containerd/certs.d/myregistry.https.d/ca.crt
+
+# Registry
+docker run -d --name registry -p 5000:5000 registry:2
+curl http://127.0.0.1:5000/v2/
+sudo apt update
+
+### Cài và cấu hình Nginx làm reverse proxy HTTPS
+sudo apt install -y nginx
+sudo nano /etc/nginx/conf.d/registry.conf
+
+
+### Tạo chứng chỉ tự ký có SAN (bắt buộc)
+sudo mkdir -p /etc/ssl/private /etc/ssl/certs
+sudo openssl req -x509 -nodes -newkey rsa:4096 \
+  -keyout /etc/ssl/private/registry.key \
+  -out /etc/ssl/certs/registry.crt \
+  -days 365 \
+  -subj "/CN=myregistry.https.d" \
+  -addext "subjectAltName=DNS:myregistry.https.d"
+
+sudo nginx -t
+sudo systemctl restart nginx
+curl -k https://myregistry.https.d/v2/ #check
+
+
+# Cluster: Have to update in masters and workers
+echo "[IP host Registry] myregistry.https.d" | sudo tee -a /etc/hosts
+sudo systemctl restart containerd
+sudo systemctl restart kubelet
+
+sudo mkdir -p /etc/containerd/certs.d/myregistry.https.d
+nano /etc/containerd/certs.d/myregistry.https.d/hosts.toml
+
+### Copy cert
+sudo scp -i ddd-root-key.pem -P 8080 ubuntu@10.0.0.5:/etc/ssl/certs/registry.crt /etc/containerd/certs.d/myregistry.https.d/ca.crt
+sudo chmod 644 /etc/containerd/certs.d/myregistry.https.d/ca.crt
+
+### Update system CA
+sudo mkdir -p /usr/local/share/ca-certificates/extra
+sudo cp /etc/containerd/certs.d/myregistry.https.d/ca.crt /usr/local/share/ca-certificates/extra/myregistry.crt
+sudo update-ca-certificates
+
+sudo systemctl restart containerd
+
+### Test
+sudo ctr images pull myregistry.https.d/nginx-custom:latest
+
+getent hosts myregistry.https.d
+# → 10.0.0.5 myregistry.https.d
 

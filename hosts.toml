@@ -1,0 +1,4 @@
+server = "https://myregistry.https.d"
+
+[host."https://myregistry.https.d"]
+  capabilities = ["pull", "resolve"]
