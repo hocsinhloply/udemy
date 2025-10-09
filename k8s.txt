@@ -128,3 +128,38 @@ kubeadm join 10.0.9.45:6443 --token 0wuagk.mn0l9ojvr1cdb0qn \
 
 
 sudo kubeadm init phase upload-certs --upload-certs
+
+
+
+
+
+
+
+
+
+
+#################################################################
+
+- kubectl get pods
+- kubectl describe pod `POD NAME` # Information about the pod
+- kubectl creat -f **file.yml** # use **create** to create 
+- kubectl get replicationcontroller
+- kubectl get replicasets
+- kubectl edit replicaset # edit replicaset is running
+- kubectl scale --replicas=2 replicaset **[Replicaset Name]** # Scale up down replica
+- kubectl scale --replicas=2 -f **file.yml**
+- kubectl replace -f **file.yml**
+- kubectl delete replicaset **[Replicaset Name]**
+- kubectl create -f deployment.yaml
+- kubectl get deployments
+- kubectl get all
+- kubectl rollout status deployment/myapp-deployment # show process
+- kubectl rollout history deployment/myapp-deployment # show the revisions and history of our deployment
+- kubectl edit deployment myapp-deployment
+- kubectl apply -f deployment-definition.yml # Apply to apply the changes
+- kubectl set image deployment/myapp-deployment \ **nginx**=nginx:1.9.1 # Update image directly instead of change in file, **nginx** is `container name`
+- kubectl rollout undo deployment/myapp-deployment
+- kubectl get svc
+
+
+
