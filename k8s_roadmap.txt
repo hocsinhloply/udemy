@@ -1,0 +1,30 @@
+Network:
+ - Service
+ - Ingress
+ - CNI
+ - Gateway API
+ - DNS
+Pod:
+ - ReplicaSet
+ - Deployment
+ - StatefulSet
+ - DeamonSet
+ - CronJob
+ - Static Pod
+Storage:
+ - PV, PVC
+ - Storage Class
+ - CSI
+Schedule:
+ - Node selector
+ - Taints-Tolerations
+ - Affinty
+ - Resource capacity
+ - Priority class
+Security:
+ - secrets
+ - config-map
+Healcheck
+Monitoring logging
+Cluseter maintenance
+Pod lifecycle
