@@ -1,0 +1,40 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "RoleFull",
+            "Effect": "Allow",
+            "Action": [
+                "iam:*",
+                "s3:*",
+                "ec2:*",
+                "autoscaling:*",
+                "autoscaling-plans:*",
+                "application-autoscaling:*",
+                "waf:*",
+                "waf-regional:*",
+                "wafv2:*",
+                "ecr:*",
+                "ecs:*",
+                "rds:*",
+                "cloudwatch:*",
+                "lambda:*",
+                "cloudfront:*",
+                "route53:*",
+                "redshift:*",
+                "codedeploy:*",
+                "support:*",
+                "dynamodb:*",
+                "applicationinsights:*",
+                "logs:*",
+                "athena:*",
+                "kms:*",
+                "cloudformation:*",
+                "billing:*"
+            ],
+            "Resource": [
+                "*"
+            ]
+        }
+    ]
+}
