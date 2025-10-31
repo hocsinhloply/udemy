@@ -8,7 +8,7 @@
 
 <a name="lab"></a>
 # II. Lab
-- Create Cluster IAM role: Select the Cluster IAM role to allow the Kubernetes control plane to manage AWS resources on your behalf. This cannot be changed after the cluster is created. To create a new custom role, follow the instructions in the Amazon EKS User Guide .
+1. **Create Cluster IAM role**: Select the Cluster IAM role to allow the Kubernetes control plane to manage AWS resources on your behalf. This cannot be changed after the cluster is created. To create a new custom role, follow the instructions in the Amazon EKS User Guide .
 ```
 AWS Management Console
 a. Open the IAM console at https://console.aws.amazon.com/iam/.
@@ -21,6 +21,62 @@ g. For Role name, enter a unique name for your role, such as eksClusterRole.
 h. For Description, enter descriptive text such as Amazon EKS - Cluster role.
 i. Choose Create role.
 ```
+2. **Create VPC, Subnet, SG**
+3. **Create Cluster**
+4. **Create Node IAM role**
+5. **Create Node group**
+
+- Update file config ~/.kube/config. The settings in this file enable the kubectl CLI to communicate with your cluster
+```
+aws eks update-kubeconfig --region ap-southeast-1 --name {cluster_name}
+```
+- Confirm that the EKS Pod Identity Agent pods are running on your cluster.
+```
+kubectl get pods -n kube-system | grep 'eks-pod-identity-agent'
+```
+- Get cluster info
+```
+kubectl config get-contexts
+kubectl cluster-info
+```
+- Check IAM Role
+```
+aws sts get-caller-identity
+```
+- To verify the user identity
+```
+aws configure --profile {name_profile}
+```
+```
+kubectl get all -A
+```
+```
+- List ServiceAccount
+kubectl get sa 
+```
+- IAM role, policy attached to Cluster, Nodes, Pods
+- Pod Security Policy: Cluster level, manage create, update pod policies
+- Role (gán với namespace) vs Cluster Role (Cluster Role cấp quyền cho các đối tượng cấp độ cluster không giới hạn namespace)
+- RoleBinding & ClusterRoleBinding gán user với các role tương ứng
+
+- Create cluster (Console and CLI)
+1. Create Amazon EKS cluster
+   - Create an Amazon VPC, private subnet
+   - Create a cluster IAM role. Kubernetes clusters managed by Amazon EKS make **calls to other AWS services** on your behalf to manage the resources that you use with the service.
+   - Create cluster in Console ...
+2. Configure computer to communicate with your cluster
+   - Create a kubeconfig file for your cluster. The settings in this file enable the kubectl CLI to communicate with your cluster.
+```
+aws eks update-kubeconfig --region region-code --name my-cluster
+By default, the config file is created in ~/.kube/config
+```
+3. Create nodes
+   - This procedure configures your cluster to use Managed node groups to create nodes => Create your EC2 Linux managed node group.
+   - Create a node IAM role and attach the required Amazon EKS IAM managed policy to it. The Amazon EKS node kubelet daemon makes calls to AWS APIs on your behalf. Nodes receive permissions for these API calls through an IAM instance profile and associated policies.
+   - Add Node Group in Compute tab
+4. Delete resources
+   - Delete any node groups => Delete cluster => Delete VPC AWS CloudFormation => Delete IAM roles
+
 
 <a name="basic-markdown"></a>
 # III. Basic markdown
@@ -61,5 +117,11 @@ This is a second line.
 > [!NOTE]
 > - Markdown basic: https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax
 > - Application Recovery Controller (ARC)
-> - Workloads: applications
+> - Workloads: Kubernetes defines a Workload as "an application running on Kubernetes." That application can consist of a set of microservices run as Containers in Pods, or could be run as a batch job or other type of applications.
 > - ARC option in EKS: https://docs.aws.amazon.com/eks/latest/userguide/zone-shift.html
+> - EKS chỉ nhận diện user tạo ra cluster là admin => dù IAM Role có AdministratorAccess cũng không tương tác được với cluster trừ khi phải set up quyền trong cluster
+> - role-based access control (RBAC)
+> - ServiceAccount là một resource để application bên trong container sử dụng cho việc authenticated tới API server
+
+# Reference
+1. [Kubernetes concepts](https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-concepts.html)
