@@ -59,7 +59,7 @@ This is a second line.
 
 <a name="note"></a>
 > [!NOTE]
-> Markdown basic: https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax
-> Application Recovery Controller (ARC)
-> Workloads: applications
+> Markdown basic: https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax\
+> Application Recovery Controller (ARC)\
+> Workloads: applications\
 > ARC option in EKS: https://docs.aws.amazon.com/eks/latest/userguide/zone-shift.html
