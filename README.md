@@ -54,6 +54,12 @@ kubectl get all -A
 - List ServiceAccount
 kubectl get sa 
 ```
+```
+kubectl config get-clusters
+kubectl config delete-cluster {name}
+```
+
+
 - IAM role, policy attached to Cluster, Nodes, Pods
 - Pod Security Policy: Cluster level, manage create, update pod policies
 - Role (gán với namespace) vs Cluster Role (Cluster Role cấp quyền cho các đối tượng cấp độ cluster không giới hạn namespace)
@@ -121,7 +127,25 @@ This is a second line.
 > - ARC option in EKS: https://docs.aws.amazon.com/eks/latest/userguide/zone-shift.html
 > - EKS chỉ nhận diện user tạo ra cluster là admin => dù IAM Role có AdministratorAccess cũng không tương tác được với cluster trừ khi phải set up quyền trong cluster
 > - role-based access control (RBAC)
-> - ServiceAccount là một resource để application bên trong container sử dụng cho việc authenticated tới API server
+> - ServiceAccount là một resource để application bên trong container sử dụng cho việc authenticated tới API server, scope namespace, mỗi namespace có 1 ServiceAccount tên `default`, một ServiceAccount có thể được sử dụng bởi nhiều Pod.
+> - ServiceAccount mặc định nếu không bật (RBAC) sẽ có quyền thực hiện mọi hành động lên API => có thẻ list, delete, create Pod => ngăn chặn = cách enable RBAC
+> - From version 1.8 default enabled RBAC => can create role and attach for ServiceAccount
+> - 
+
+- RBAC action
+| Action | Verb     |
+|--------|----------|
+| HEAD   | get      |
+| GET    | get      |
+| POST   | create   |
+| PUT    | update   |
+| PATCH  | patch    |
+| DELETE | delete   |
+- RBAC resources
+  - Roles: định nghĩa verb nào có thể được thực hiện trên namespace
+  - ClusterRoles: định nghĩa verb nào có thể được thực hiện trên cluster
+  - RoleBindings: gán role tới một SA
+  - ClusterRoleBindings: gán ClusterRoles tới SA
 
 # Reference
 1. [Kubernetes concepts](https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-concepts.html)
