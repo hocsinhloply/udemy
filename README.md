@@ -22,8 +22,18 @@ h. For Description, enter descriptive text such as Amazon EKS - Cluster role.
 i. Choose Create role.
 ```
 2. **Create VPC, Subnet, SG**
+```
+Create inbound from bastion for the cluster's SG
+```
 3. **Create Cluster**
 4. **Create Node IAM role**
+```
+AmazonEC2ContainerRegistryReadOnly
+AmazonEKS_CNI_Policy
+AmazonEKSWorkerNodePolicy
+AmazonSSMManagedInstanceCore
+CloudWatchAgentServerPolicy
+```
 5. **Create Node group**
 
 - Update file config ~/.kube/config. The settings in this file enable the kubectl CLI to communicate with your cluster
