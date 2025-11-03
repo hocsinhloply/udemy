@@ -133,6 +133,7 @@ This is a second line.
 > - 
 
 - RBAC action
+
 | Action | Verb     |
 |--------|----------|
 | HEAD   | get      |
@@ -141,6 +142,7 @@ This is a second line.
 | PUT    | update   |
 | PATCH  | patch    |
 | DELETE | delete   |
+
 - RBAC resources
   - Roles: định nghĩa verb nào có thể được thực hiện trên namespace
   - ClusterRoles: định nghĩa verb nào có thể được thực hiện trên cluster
