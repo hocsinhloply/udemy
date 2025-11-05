@@ -6,6 +6,8 @@
 <a name="eks"></a>
 # I. EKS
 
+- Creates an EKS Pod Identity association between **a service account in an Amazon EKS cluster** and **an IAM role with EKS Pod Identity**. Use EKS Pod Identity to give **temporary IAM credentials to Pods** and the credentials are rotated automatically.
+
 <a name="lab"></a>
 # II. Lab
 1. **Create Cluster IAM role**: Select the Cluster IAM role to allow the Kubernetes control plane to manage AWS resources on your behalf. This cannot be changed after the cluster is created. To create a new custom role, follow the instructions in the Amazon EKS User Guide .
@@ -158,6 +160,13 @@ This is a second line.
   - ClusterRoles: định nghĩa verb nào có thể được thực hiện trên cluster
   - RoleBindings: gán role tới một SA
   - ClusterRoleBindings: gán ClusterRoles tới SA
+
+```
+kubectl get sa // List all service account
+kubectl get clusterroles
+kubectl get clusterrolebindings
+kubectl get clusterrole view -o yaml // List all resources in a namespace
+```
 
 # Reference
 1. [Kubernetes concepts](https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-concepts.html)
