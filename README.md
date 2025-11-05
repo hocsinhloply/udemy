@@ -2,6 +2,7 @@
 1. [I. EKS](#eks)
 2. [II. Lab](#lab)
 3. [III. Basic markdown](#basic-markdown)
+4. [IV. CICD](#cicd)
 
 <a name="eks"></a>
 # I. EKS
@@ -170,3 +171,49 @@ kubectl get clusterrole view -o yaml // List all resources in a namespace
 
 # Reference
 1. [Kubernetes concepts](https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-concepts.html)
+
+
+<a name="cicd"></a>
+# IV. CICD
+
+## 1. CodeBuild
+- Một dịch vụ Xây dựng kiểm thử từ AWS
+- Chạy kiểm thử và tạo ra các software package
+- Mục đích cuối cùng là tạo ra các artifact (Tập hợp các file tĩnh, file jar, file dockerfile)
+- Cung cấp file 'buildspec' thông qua một Dockerfile từ source code.
+- Bản chất là những EC2 - managed service => Có khả năng mở rộng
+- Price: chi phí cho thời gian build
+
+## 2. CodeDeploy
+- Dịch vụ triển khai tự động vào các môi trường dịch vụ như: EC2, ECS, Lambda or máy chủ vật lý (cần CodeDeploy agent, thường là dùng Jenkins cho on-premises)
+- Triển khai tự động: giảm downtime, tăng tốc độ triển khai
+- Triển khai môi trường phức tạp
+- Khả năng tích hợp
+- Quản lý chi phí
+- Cập nhật liên tục
+
+## 3. CodePipeline
+- Dịch vụ giúp tự động hóa các bước trong quá trình phát triển phần mềm.
+- Xác định một chuỗi các bước "pipeline" mỗi bước được thực hiện khi code thay đổi
+- VD: thay đổi code trong kho lưu trữ (Git, Github, ...)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
