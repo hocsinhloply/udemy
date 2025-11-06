@@ -197,8 +197,34 @@ kubectl get clusterrole view -o yaml // List all resources in a namespace
 - Xác định một chuỗi các bước "pipeline" mỗi bước được thực hiện khi code thay đổi
 - VD: thay đổi code trong kho lưu trữ (Git, Github, ...)
 
+## 4. Github Action
+
+Workflow triggers are events that cause a workflow to run. These events can be:
+- Events that occur in your workflow's repository
+- Events that occur outside of GitHub and trigger a repository_dispatch event on GitHub
+- Scheduled times
+- Manual
+
+Example:
+```
+- Trigger when have a pull_request event
+on:
+  pull_request:
+    # Sequence of patterns matched against refs/heads
+    branches:
+      - main
+
+- Trigger when have a push event
+on:
+  push:
+    branches:
+      - main
+      - 'releases/**'
 
 
+
+
+```
 
 
 
