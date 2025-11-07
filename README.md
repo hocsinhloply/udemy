@@ -6,8 +6,18 @@
 
 <a name="eks"></a>
 # I. EKS
+- Stand for **Elastic Kubernetes Service**
+- Way to launch managed Kubernetes clusters on AWS
+- Support two launch modes
+  - EC2 launch mode (Worker node)
+  - Fargate launch mode (serverless container)
+- Node Types:
+  - Managed Node Groups
+  - Self-Managed Nodes
+  - AWS Fargate
 
 - Creates an EKS Pod Identity association between **a service account in an Amazon EKS cluster** and **an IAM role with EKS Pod Identity**. Use EKS Pod Identity to give **temporary IAM credentials to Pods** and the credentials are rotated automatically.
+- 
 
 <a name="lab"></a>
 # II. Lab
