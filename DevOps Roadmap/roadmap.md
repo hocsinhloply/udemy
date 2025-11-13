@@ -30,8 +30,22 @@
 - A reverse proxy gets the request from a client, passes it on to another server, and then forwards it back to the client, making it appear as if the initial proxy server processed it.
 - These proxies make sure that users don’t reach the origin server directly
 
-<a name="lab"></a>
-# II. Lab
+<a name="cache"></a>
+# II. Cache
+
+- Caching is the process of storing copies of files in a cache, or temporary storage location, so that they can be accessed more quickly
+- Web browsers cache HTML files, JavaScript, and images in order to load websites more quickly, while DNS servers cache DNS records for faster lookups and CDN servers cache content to reduce latency.
+- To shorten page load times, browsers cache most of the content that appears on the webpage, saving a copy of the webpage's content on the device’s hard drive. This way, the next time the user loads the page, most of the content is already stored locally and the page will load much more quickly.
+- Browsers store these files until their **time to live (TTL)** expires or until the hard drive cache is full. (TTL is an indication of how long content should be cached.)
+
+## 1. CDN - Content Delivery Network
+
+- A CDN, or content delivery network, caches content (such as images, videos, or webpages) in proxy servers that are located closer to end users than origin servers.
+
+<a name="firewall"></a>
+# III. Firewall
+
+- Firewalls have existed since the late 1980’s and started out as packet filters, which were networks set up to examine packets, or bytes, transferred between computers.
 
 <a name="basic-markdown"></a>
 # III. Basic markdown
