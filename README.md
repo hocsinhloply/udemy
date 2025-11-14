@@ -6,6 +6,34 @@
 
 <a name="eks"></a>
 # I. EKS
+
+Ref:
+- https://docs.aws.amazon.com/eks/latest/userguide/network-reqs.html
+- https://github.com/kubernetes-sigs/aws-load-balancer-controller/blob/main/docs/guide/ingress/annotations.md
+- https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html
+- https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html#security-group-restricting-cluster-traffic
+- https://docs.aws.amazon.com/eks/latest/userguide/hybrid-nodes-networking.html
+- https://docs.aws.amazon.com/eks/latest/best-practices/control-plane.html
+
+Control Plane Components manage the cluster and provide access to its APIs. 
+Worker nodes (sometimes just referred to as Nodes) provide the places where the actual workloads are run. 
+Node Components consist of services that run on each node to communicate with the control plane and run containers. 
+The set of worker nodes for your cluster is referred to as the Data Plane.
+
+Tasks that components of the Kubernetes control plane performs include:
+
+Communicating with cluster components (API server)
+Store data about the cluster (etcd key value store)
+Schedule Pods to nodes (Scheduler)
+Keep components in desired state (Controller Manager)
+Manage cloud resources (Cloud Controller Manager)
+
+
+## Control plane
+- The EKS control plane comprises the Kubernetes API server nodes, etcd cluster.
+- Kubernetes API server nodes that run components like the API server, scheduler, and kube-controller-manager run in an auto-scaling group.
+
+
 - Stand for **Elastic Kubernetes Service**
 - Way to launch managed Kubernetes clusters on AWS
 - Support two launch modes
