@@ -1,0 +1,25 @@
+# Request Amazon EBS volume modifications
+
+- Request Amazon EBS volume modifications: https://docs.aws.amazon.com/ebs/latest/userguide/requesting-ebs-volume-modifications.html
+- You can check the file system size to see if your instance recognizes the larger volume space. On Linux, use the df -h command to check the file system size.
+- Extend the file system after resizing an Amazon EBS volume: https://docs.aws.amazon.com/ebs/latest/userguide/recognize-expanded-volume-linux.html
+- Check whether the volume has a partition. Use the lsblk command: sudo lsblk
+- Check whether the partition needs to be extended. In the lsblk command output from the previous step, compare the partition size and the volume size.
+- Extend the partition. Use the growpart command and specify the device name and the partition number:
+- The partition number is the number after the p. For example, for nvme0n1p1, the partition number is 1. For nvme0n1p128, the partition number is 128.
+- To extend a partition named nvme0n1p1, use the following command: sudo growpart /dev/nvme0n1 1
+- Verify that the partition has been extended. Use the lsblk command. The partition size should now be equal to the volume size.
+- Extend the file system.
+- Get the name, size, type, and mount point for the file system that you need to extend. Use the df -hT or lsblk -f command.
+- The commands to extend the file system differ depending on the file system type. Choose the following correct command based on the file system type that you noted in the previous step. 
+- [XFS file system] Use the xfs_growfs command and specify the mount point of the file system that you noted in the previous step: sudo xfs_growfs -d /
+- [Ext4 file system] Use the resize2fs command and specify the name of the file system that you noted in the previous step: sudo resize2fs /dev/nvme0n1p1
+- Make an Amazon EBS volume available for use: https://docs.aws.amazon.com/ebs/latest/userguide/ebs-using-volumes.html#ebs-format-mount-volume
+- Format and mount an attached volume
+- Use the lsblk command to view your available disk devices and their mount points (if applicable) to help you determine the correct device name to use.
+- The output of lsblk removes the /dev/ prefix from full device paths.
+- Determine whether there is a file system on the volume:
+  - Use the file -s command to get information about a specific device:  If the output shows simply data, there is no file system on the device
+  - If the device has a file system, the command shows information about the file system type.
+- Use the lsblk -f command to get information about all of the devices attached to the instance: sudo lsblk -f
+- Use the blkid command to find the UUID of the device
