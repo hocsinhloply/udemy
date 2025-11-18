@@ -69,4 +69,23 @@ sudo resize2fs /dev/root (với kiểu ext4 dùng resize2fs, /dev/root là file 
   - mkpart primary ext4 0% 5GB (ext4 o day chi la label => chua co filesystem)
   - mkpart primary ext4 5GB 100%
 
-
+## Inode
+- Inode stands for Index Node
+- Inodes **stores metadata** for every file on your system in a table-like structure usually located near the beginning of a partition.
+- They store all the information **except the file name and the data**.
+- Inodes stores metadata about the file it refers to. This metadata contains all the information about the said file.
+  - Size
+  - Permission
+  - Owner/Group
+  - Location of the hard drive
+  - Date/time
+  - Other information
+- Every used inode refers to 1 file. Every file has 1 inode. Directories, character files, and block devices are all files. They each have 1 inode.
+- For each file in a directory, there is an entry containing the filename and the inode number associated with it.
+- Inodes are **unique at the partition level**. You can have two files with the same inode number given they are on different partitions.
+- List the inodes number = `ls -i`
+- List inode information for each file system = `df -hi`
+- Soft/ Hard link
+  - When you create a **soft link**, you create a **new file**. In its metadata, it points to the target. For every soft link you create, you use one inode.
+  - A **hard link** does **not create a new file**. It only provides a new name for the same data. Because a hard link has the same inode number as the original file, you can delete the original file and the data is still available through the hard link.
+  - Inodes are also a big reason why a Linux system can update without the need to reboot. This is because one process can use a library file while another process replaces that file with a new version. Therefore, creating a new inode for the new file. The already running process will keep using the old file while every new call to it will result in using the new version.
