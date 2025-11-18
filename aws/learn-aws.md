@@ -23,3 +23,50 @@
   - If the device has a file system, the command shows information about the file system type.
 - Use the lsblk -f command to get information about all of the devices attached to the instance: sudo lsblk -f
 - Use the blkid command to find the UUID of the device
+
+Make an Amazon EBS volume available for use: https://docs.aws.amazon.com/ebs/latest/userguide/ebs-using-volumes.html#ebs-format-mount-volume
+Use the blkid command to find the UUID of the device
+
+df -hT /: check file system type, df disk free hiển thị thông tin file system, -h human read, -T hiển thị loại, -t <type> hiển thị loại filesystem chỉ định, -i hiển thị thông tin dung lượng inode
+Resize partition then resize file system
+sudo resize2fs /dev/root (với kiểu ext4 dùng resize2fs, /dev/root là file system)
+
+## Extend current EBS volume
+- Modify current volume
+- Check the volume is modified: sudo lsblk -f
+- Extend partition or create new partition:
+  - Extend: Example sudo growpart /dev/nvme0n1 1
+  - Create new partition => format partition (follow below direction)
+
+## Mount new EBS volume
+1. Create the new EBS volume
+2. Attach volume in Console (EBS volume have to create in the same AZ with instance)
+3. Check if this volume available = lsblk
+4. Check device has a file system? = sudo file -s {device name} or use sudo lsblk -f
+- Ex Result: /dev/xvdf: data => no file system
+- Ex Result: dev/xvda1: SGI XFS filesystem data (blksz 4096, inosz 512, v2 dirs) => has
+
+(Optional)
+- Seperate partitions: 
+  - sudo parted /dev/nvme1n1
+  - mklabel gpt (Create Partition Table has type gpt)
+  - mkpart primary ext4 0% 5GB (ext4 o day chi la label => chua co filesystem)
+  - mkpart primary ext4 5GB 100%
+
+5. Create file system: mkfs -t command to create a file system on the volume.
+- sudo mkfs -t xfs /dev/nvme1n1 (xfs)
+- sudo mkfs –t ext4 /dev/nvme1n1 (ext4)
+6. Create a mount point directory for the volume: sudo mkdir /data
+7. Mount volume at the mount point directory:  sudo mount /dev/xvdf1 /data
+
+**Automatically mount an attached volume after reboot**
+
+- Remove file system: sudo wipefs -a /dev/nvme1n1
+- File system là cấu trúc logic bên trong partition => cách chia block, lưu inode, ghi dữ liệu, quản lý tên file, quyền, ....
+- Seperate partitions: 
+  - sudo parted /dev/nvme1n1
+  - mklabel gpt (Create Partition Table has type gpt)
+  - mkpart primary ext4 0% 5GB (ext4 o day chi la label => chua co filesystem)
+  - mkpart primary ext4 5GB 100%
+
+
