@@ -89,3 +89,6 @@ sudo resize2fs /dev/root (với kiểu ext4 dùng resize2fs, /dev/root là file 
   - When you create a **soft link**, you create a **new file**. In its metadata, it points to the target. For every soft link you create, you use one inode.
   - A **hard link** does **not create a new file**. It only provides a new name for the same data. Because a hard link has the same inode number as the original file, you can delete the original file and the data is still available through the hard link.
   - Inodes are also a big reason why a Linux system can update without the need to reboot. This is because one process can use a library file while another process replaces that file with a new version. Therefore, creating a new inode for the new file. The already running process will keep using the old file while every new call to it will result in using the new version.
+  - When creating filesystem `mkfs` => total inodes was estimated. To check number of inodes use `df -i', field Inodes = total inodes, IUsed = used inodes, IFree = available inodes.
+  - Details about inode: `sudo tune2fs -l /dev/root | grep -E "Inode count|Inode size|Block count|Block size|Reserved block"`
+  - A **block** is the **smallest unit of data storage** managed by a filesystem. **Each file no matter how small occupies at least one block**.
