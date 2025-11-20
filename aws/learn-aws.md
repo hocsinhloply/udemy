@@ -112,3 +112,47 @@ sudo resize2fs /dev/root (với kiểu ext4 dùng resize2fs, /dev/root là file 
 - https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html
 - https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html#private-access
 
+# Deployment Strategies in AWS
+
+## Blue/Green Deployment
+- Maintain two identical environments: current env (Blue) - live, new env (Green) - used to deploy
+- After testing, traffic is switched from Blue to Green.
+
+## Rolling Deployment
+- Rolled out to a few instances at a time => ensure minimal disruption
+
+## Canary Deployment
+- A small percentage of traffic is initially sent to the new version
+- If this version is stable, traffic is gradually increased until all users are served by the new version.
+
+## In-place Deployment Strategy
+- The previous version of the application is stopped, the new version is installed.
+- The new version is started on the same server or compute resource.
+- This approach ensures minimal infrastructure changes.
+
+## Linear Deployment
+- Traffic is shifted in equal increments, with a set number of minutes between each increment.
+- The goal is to gradually move traffic from the old version to the new version, reducing the risk of failure by monitoring performance as traffic is shifted.
+- Example: Suppose you have a web service and you want to migrate 100% of the traffic from version 1 to version 2. With linear deployment, you might shift 10% of the traffic every 10 minutes until all traffic is directed to version 2.
+
+## All-at-once Deployment Strategy
+- All traffic is shifted from the original environment to the new environment instantly.
+
+
+
+>[!Note]
+> Event name related EC2 in cloudtrail: https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_AuthorizeSecurityGroupIngress.html
+
+
+
+
+
+
+
+
+
+
+
+
+
+
