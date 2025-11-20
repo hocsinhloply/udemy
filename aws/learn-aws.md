@@ -92,3 +92,23 @@ sudo resize2fs /dev/root (với kiểu ext4 dùng resize2fs, /dev/root là file 
   - When creating filesystem `mkfs` => total inodes was estimated. To check number of inodes use `df -i', field Inodes = total inodes, IUsed = used inodes, IFree = available inodes.
   - Details about inode: `sudo tune2fs -l /dev/root | grep -E "Inode count|Inode size|Block count|Block size|Reserved block"`
   - A **block** is the **smallest unit of data storage** managed by a filesystem. **Each file no matter how small occupies at least one block**.
+
+
+# EKS
+
+## EKS Cluster Architecture
+- An EKS cluster consists of two VPCs: 
+  - One VPC managed by AWS that hosts the Kubernetes control plane
+  - One VPC managed by customers that hosts the Kubernetes worker nodes (EC2 instances) where containers run, as well as other AWS infrastructure (like load balancers) used by the cluster.
+- The worker nodes connect either to the public endpoint, or through the EKS-managed elastic network interfaces (ENIs) that are placed in the subnets that you provide when you create the cluster
+
+- https://docs.aws.amazon.com/eks/latest/best-practices/control-plane.html
+- https://aws.amazon.com/blogs/containers/de-mystifying-cluster-networking-for-amazon-eks-worker-nodes/
+
+## Cluster endpoint access
+- Public access
+- Both public access and private access
+- Private access
+- https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html
+- https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html#private-access
+
