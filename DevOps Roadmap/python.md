@@ -37,7 +37,15 @@ Modulo or "Mod" Operator: `7 / 4` `7 % 4`
 
 ## Formatting with .format() method
 ## Float formatting follow {value:width.precision f}
-
+```
+print('The {} {} {}'.format('fox', 'brown', 'quick'))
+print('The {2} {1} {0}'.format('fox', 'brown', 'quick'))
+print('The {0} {0} {0}'.format('fox', 'brown', 'quick'))
+print('The {f} {b} {b}'.format(f='fox', b='brown', q='quick'))
+print("The result was {r:1.3f}".format(r=result))
+print("The result was {r:10.3f}".format(r=result))
+print(f'Hello, his name is {name}') # F strings
+```
 
 # Lists
 - Ordered sequence of objects
@@ -61,4 +69,56 @@ d['key1']
 d.key()
 d.values()
 d.items()
+```
+
+# Tuples
+- Same lists but **Immutability**
+- Use ()
+
+- Two methods associated with count(), index('')
+```
+t = ('a', 'a', 'b')
+t.count('a')
+t.index('a') return first time 'a' appear
+```
+
+# Sets
+- unique elements
+- unordered
+
+```
+myset = set()
+myset.add(1)
+```
+
+# Booleans
+- True or False statements
+
+```
+True or False not true, false
+```
+# I/O with Basic Files in Python (.txt)
+
+```
+%%writefile myfile.txt #save in the same location
+Hello this is a text file
+this is the second line
+
+myfile = open('myfile.txt')
+
+pwd #check working location
+
+myfile.read() #read to end file and cursor point at end => myfile.read() = '' => need reset cursor myfile.seek({index})
+myfile.seek(0) # reset at begin
+myfile.readlines() #return list each lines
+myfile.close()
+
+with open('myfile.txt') as my_new_file:
+  contents = my_new_file.read()
+
+with open('myfile.txt') as my_new_file:
+  contents = my_new_file.read()
+## shift tab open(herehere'myfile.txt') => open information for function
+Window path format: "C:\\User\\test.txt"
+MacOS, Linux: "/Users/YouUserName/test.txt"
 ```
