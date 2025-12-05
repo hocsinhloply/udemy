@@ -161,3 +161,126 @@ For the following quiz questions, we will get a preview of comparison operators.
 <td> (a &lt;= b) is true. </td>
 </tr>
 </table>
+
+
+
+# Statements
+- If, Elif, Else
+```
+if some_condition:
+    # execute some code
+elif some_other_condition:
+    # something different
+else:
+    # do sth else
+```
+
+# Loop
+- for
+- while
+- range(a,b), range(a,b,step)
+```
+my_iterable = [1,2,3]
+for item_name in my_iterable: # Get value
+    print(item_name)
+
+range(a,b) => return [a,b)
+
+my_list = [(1,2), (3,4)]
+for (a,b) in my_list:
+    print(a,b)
+
+d = {'k1':1,'k2':2,'k3':3}
+for a in d.items():
+    print(a)
+for key,value in d.items():
+    print(value)
+
+while condition:
+    #execution
+else:
+    #execution
+
+x = [1,2,3]
+
+for item in x:
+    pass # Does nothing at all
+
+print('end of my script')
+
+break
+continue
+
+word = 'abcd';
+The enumerate() function in Python simplifies looping by providing both the index and the value of an iterable.
+for item in enumerate(word):
+    print(item)
+for index,item in enumerate(word):
+    print(index)
+    print(item)
+
+mylist1 = [1,2]
+mylist2 = ['a','b']
+mylist3 = [100,200]
+
+for item in zip(mylist1,mylist2,mylist3)
+    print(item)
+
+'x' in [1,2,3] #return false => type boolean
+
+min(mylist1)
+max(mylist2)
+
+result = input('Type input here: ') #input return str => if want input as int => int(result), float(result)....
+```
+
+# List Comprehensions
+
+```
+[x for x in range(1,51) if x%3 == 0]
+[x if x%2==0 else 'ODD' for x in range(0,11)]
+[word[0] for word in st.split()]
+[x*y for x in [2,4,6] for y in [1,10,100]]
+```
+
+# Methods, Function
+- Medthods using object-oriented programming and classes
+- Function - blocks of code
+```
+mylist.pop()
+=> pop() = method
+help(mylist.pop)
+
+
+def name_of_function(name):
+    """
+    explain function
+    """
+    print("Hello " + name)
+
+name_of_function("DDD")
+
+def add_function(num1,num2):
+    return num1+num2
+
+result = add_function(1,2)
+
+def say_hello(name='Jennie'):
+    print(f'Hello {name},')
+    print("How are you?")
+
+say_hello()
+
+
+### Unpacking tuple
+
+stock_prices = [('APPL',200),('GOOG',400)]
+
+def employee_check(stock_prices):
+    current_max = 0
+    employee_of_month = ''
+
+    return (employee_of_month, current_max)
+
+symbol, price = employee_check(stock_prices) #Unpacking
+```
