@@ -1,3 +1,9 @@
+# Use CLI, Access Key
+```
+aws configure
+aws iam list-user
+```
+
 # Request Amazon EBS volume modifications
 
 - Request Amazon EBS volume modifications: https://docs.aws.amazon.com/ebs/latest/userguide/requesting-ebs-volume-modifications.html
